@@ -27,5 +27,7 @@
 **答：**`zh`及`zh-cn`符合规范，但不推荐使用。`zh_CN`表达方式无效
 
 **附录：**
+
 [BCP47规范](https://www.ietf.org/rfc/bcp/bcp47.txt)
+
 [IANA语言子标签注册表](https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry)
