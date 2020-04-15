@@ -1,4 +1,4 @@
-##### [前端技术总结](https://github.com/luobolin/Frontend-01-Template/blob/master/week01/frontend.md)(待完善)
+##### [前端技术总结](https://github.com/luobolin/Frontend-01-Template/blob/master/week01/frontend.xmind)(待完善)
 
 **问：**`<html>`标签中`lang`属性如何取值？为什么有时是`zh`，有时候是`zh-cn`，或者`zh_CN`?
 
