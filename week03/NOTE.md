@@ -1,1 +1,1 @@
-# 每周总结可以写在这里
+##### [JavaScript 标准里所有的对象](https://github.com/luobolin/Frontend-01-Template/blob/master/week01/JavaScriptObject.xmind)
