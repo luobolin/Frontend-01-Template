@@ -25,8 +25,8 @@ const convertNumberToString = (num: number): string => {
     return (isPosi ? '-' : '') + String.fromCharCode(48 + num) + str
 }
 
-console.log(`测试字符串：100, 测试状态：${convertNumberToString(100) === '100' ? '通过' : '出错'}`)
-console.log(`测试字符串：-50, 测试状态：${convertNumberToString(-50) === '-50' ? '通过' : '出错'}`)
-console.log(`测试字符串：+10, 测试状态：${convertNumberToString(+10) === '10' ? '通过' : '出错'}`)
-console.log(`测试字符串：1.2, 测试状态：${convertNumberToString(1.2) === '1.2' ? '通过' : '出错'}`)
-console.log(`测试字符串：1a2, 测试状态：${convertNumberToString(NaN) === 'NaN' ? '通过' : '出错'}`)
+console.log(`测试数字：100, 测试状态：${convertNumberToString(100) === '100' ? '通过' : '出错'}`)
+console.log(`测试数字：-50, 测试状态：${convertNumberToString(-50) === '-50' ? '通过' : '出错'}`)
+console.log(`测试数字：+10, 测试状态：${convertNumberToString(+10) === '10' ? '通过' : '出错'}`)
+console.log(`测试数字：1.2, 测试状态：${convertNumberToString(1.2) === '1.2' ? '通过' : '出错'}`)
+console.log(`测试数字：1a2, 测试状态：${convertNumberToString(NaN) === 'NaN' ? '通过' : '出错'}`)
