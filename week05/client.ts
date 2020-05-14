@@ -49,14 +49,14 @@ class ResponseParser implements ResponseParserProps {
     bodyParser: ResponseParserProps['bodyParser'];
 
     constructor() {
-        this.WAITING_STATUS_LINE = this.WAITING_STATUS_LINE
-        this.WAITING_STATUS_LINE_END = this.WAITING_STATUS_LINE_END
-        this.WAITING_HEADER_NAME = this.WAITING_HEADER_NAME
-        this.WAITING_HEADER_SPACE = this.WAITING_HEADER_SPACE
-        this.WAITING_HEADER_VALUE = this.WAITING_HEADER_VALUE
-        this.WAITING_HEADER_LINE_END = this.WAITING_HEADER_LINE_END
-        this.WAITING_HEADER_BLOCK_END = this.WAITING_HEADER_BLOCK_END
-        this.WAITING_HEADER_BODY = this.WAITING_HEADER_BODY
+        this.WAITING_STATUS_LINE = 0
+        this.WAITING_STATUS_LINE_END = 1
+        this.WAITING_HEADER_NAME = 2
+        this.WAITING_HEADER_SPACE = 3
+        this.WAITING_HEADER_VALUE = 4
+        this.WAITING_HEADER_LINE_END = 5
+        this.WAITING_HEADER_BLOCK_END = 6
+        this.WAITING_HEADER_BODY = 7
 
         this.current = this.WAITING_STATUS_LINE
         this.statusLine = ''
@@ -137,6 +137,7 @@ class ResponseParser implements ResponseParserProps {
         if (this.current === this.WAITING_HEADER_VALUE) {
             if (char !== '\r') {
                 this.headerValue += char
+                return
             }
 
             this.current = this.WAITING_HEADER_LINE_END
@@ -148,7 +149,15 @@ class ResponseParser implements ResponseParserProps {
         }
 
         if (this.current === this.WAITING_HEADER_LINE_END) {
-            if (char === '\r') {
+            if (char === '\n') {
+                this.current = this.WAITING_HEADER_NAME
+            }
+
+            return
+        }
+
+        if (this.current === this.WAITING_HEADER_BLOCK_END) {
+            if (char === '\n') {
                 this.current = this.WAITING_HEADER_BODY
             }
 
@@ -227,6 +236,11 @@ class TrunkedBodyParse implements TrunkedBodyParseProps {
         }
 
         if (this.current === this.READING_TRUNK) {
+            if(char === '\r') {
+                this.current = this.WAITING_NEW_LINE
+                return
+            }
+
             this.content.push(char)
             this.length--
             if (this.length === 0) {
@@ -259,8 +273,8 @@ interface LRequestOptions {
     path?: string;
     body?: { [key: string]: any }
     headers?: {
-        'Content-type'?: 'application/json' | 'application/x-www-form-urlencoed';
-        'Content-length'?: number;
+        'Content-Type'?: 'application/json' | 'application/x-www-form-urlencoed';
+        'Content-Length'?: number;
         [key: string]: any
     }
 }
@@ -284,11 +298,11 @@ class LRequest implements LRequestOptions {
         this.headers = options.headers || {}
 
         // 设置默认 Content-type
-        if (!this.headers['Content-type']) {
+        if (!this.headers['Content-Type']) {
             this.headers["Content-Type"] = "application/x-www-form-urlencoed"
         }
 
-        switch (this.headers["Content-type"]) {
+        switch (this.headers["Content-Type"]) {
             case 'application/json':
                 this.bodyText = JSON.stringify(this.body)
                 break
@@ -296,16 +310,14 @@ class LRequest implements LRequestOptions {
                 this.bodyText = Object.entries(this.body).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join('&')
         }
 
-        this.headers["Content-length"] = this.bodyText.length
+        this.headers["Content-Length"] = this.bodyText.length
     }
 
     toString() {
-        return `
-${this.method} ${this.path} HTTP/1.1\r
+        return `${this.method} ${this.path} HTTP/1.1\r
 ${Object.entries(this.headers).map(([key, val]) => `${key}: ${val}`).join('\r\n')}\r
 \r
-${this.bodyText}
-        `
+${this.bodyText}`
     }
 
     send(connection?: any) {
@@ -324,8 +336,6 @@ ${this.bodyText}
             }
 
             connection.on('data', (data) => {
-                console.log(data.toString())
-
                 parser.receive(data.toString())
                 if (parser.isFinished) {
                     resolve(parser.response)
@@ -359,3 +369,5 @@ const go = async (): Promise<void> => {
     const response = await request.send()
     console.log('response :', response);
 }
+
+go()
