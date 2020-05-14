@@ -215,7 +215,7 @@ class TrunkedBodyParse implements TrunkedBodyParseProps {
     receiveChar(char: string) {
         if (this.current === this.WAITING_LENGTH) {
             if (char !== '\r') {
-                this.length *= 10
+                this.length *= 16
                 this.length += char.charCodeAt(0) - '0'.charCodeAt(0)
                 return
             }
@@ -336,6 +336,7 @@ ${this.bodyText}`
             }
 
             connection.on('data', (data) => {
+                console.log(data.toString())
                 parser.receive(data.toString())
                 if (parser.isFinished) {
                     resolve(parser.response)
@@ -356,7 +357,7 @@ const go = async (): Promise<void> => {
         method: 'POST',
         host: '127.0.0.1',
         path: "/",
-        port: 1234,
+        port: 5000,
         headers: {
             ["device-uuid"]: "iwvixlhdapqmvhaesfhqwonvsowehfoi"
         },
