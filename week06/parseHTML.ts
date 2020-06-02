@@ -1,5 +1,7 @@
 const EOF = Symbol('EOF')
 
+const layoutJs = require('../week07/layout')
+
 let currentToken = null
 let currentAttribute = null
 let currentTextNode = null
@@ -41,6 +43,10 @@ function emit(token) {
             throw new Error("Tag start end doesn't match")
         } else {
             // console.log('pop', stack.pop())
+            if ((top as any).tagName === 'style') {
+                // addCSSRules(top.children[0].content)
+            }
+            layoutJs.layout(top)
             stack.pop()
         }
         currentTextNode = null
