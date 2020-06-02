@@ -1,4 +1,5 @@
 const net = require('net')
+const parse = require('../week06/parseHTML')
 
 interface ResponseParserProps {
     WAITING_STATUS_LINE: 0; // 初始状态
@@ -236,7 +237,7 @@ class TrunkedBodyParse implements TrunkedBodyParseProps {
         }
 
         if (this.current === this.READING_TRUNK) {
-            if(char === '\r') {
+            if (char === '\r') {
                 this.current = this.WAITING_NEW_LINE
                 return
             }
@@ -336,7 +337,6 @@ ${this.bodyText}`
             }
 
             connection.on('data', (data) => {
-                console.log(data.toString())
                 parser.receive(data.toString())
                 if (parser.isFinished) {
                     resolve(parser.response)
@@ -369,6 +369,7 @@ const go = async (): Promise<void> => {
 
     const response = await request.send()
     console.log('response :', response);
+    parse.parseHTML((response as any).body)
 }
 
 go()
